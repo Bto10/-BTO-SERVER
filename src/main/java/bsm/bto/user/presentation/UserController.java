@@ -1,9 +1,6 @@
 package bsm.bto.user.presentation;
 
-import bsm.bto.user.presentation.dto.UserInfoRequestDTO;
 import bsm.bto.user.presentation.dto.UserInfoResponseDTO;
-import bsm.bto.user.presentation.dto.UserRankingRequestDTO;
-import bsm.bto.user.presentation.dto.UserRankingResponseDTO;
 import bsm.bto.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +15,16 @@ public class UserController {
 
     @GetMapping("/users/{user_id}")
     public ResponseEntity<UserInfoResponseDTO> getUserInfo(@PathVariable("user_id") Long userId) {
-        UserInfoRequestDTO requestDTO = new UserInfoRequestDTO();
-        requestDTO.setUserId(userId);
-
-        UserInfoResponseDTO responseDTO = userService.getUserInfo(requestDTO.getUserId());
+        UserInfoResponseDTO responseDTO = userService.getUserInfo(userId);
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/ranks/{user_id}")
-    public ResponseEntity<UserRankingResponseDTO> getUserRanking(@PathVariable("user_id") Long userId) {
-        UserRankingRequestDTO requestDTO = new UserRankingRequestDTO();
-        requestDTO.setUserId(userId);
-
-        int ranking = userService.getUserRanking(requestDTO.getUserId());
-        UserRankingResponseDTO responseDTO = new UserRankingResponseDTO();
-        responseDTO.setRanking(ranking);
-
-        return ResponseEntity.ok(responseDTO);
+    @GetMapping("/ranks")
+    public ResponseEntity<?> getUserRanking(@RequestParam(value = "userId", required = false) Long userId) {
+        if (userId == null) {
+            return ResponseEntity.ok(userService.getAllUserRankings());
+        } else {
+            return ResponseEntity.ok(userService.getUserRanking(userId));
+        }
     }
 }
