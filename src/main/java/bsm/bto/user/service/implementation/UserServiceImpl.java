@@ -2,11 +2,14 @@ package bsm.bto.user.service.implementation;
 
 import bsm.bto.user.domain.User;
 import bsm.bto.user.domain.repository.UserRepository;
-import bsm.bto.user.presentation.dto.UserInfoResponseDTO;
+import bsm.bto.user.presentation.dto.*;
 import bsm.bto.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +22,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponseDTO getUserInfo(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return mapUserToResponseDTO(user);
+        return UserInfoResponseDTO.toDto(user);
     }
 
     @Override
@@ -28,14 +30,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserRanking(userId);
     }
 
-    private UserInfoResponseDTO mapUserToResponseDTO(User user) {
-        UserInfoResponseDTO responseDTO = new UserInfoResponseDTO();
-        responseDTO.setId(user.getId());
-        responseDTO.setGrade(user.getGrade());
-        responseDTO.setClassNumber(user.getClassNumber());
-        responseDTO.setStudentNumber(user.getStudentNumber());
-        responseDTO.setMoney(user.getMoney());
-        responseDTO.setName(user.getName());
-        return responseDTO;
+    @Override
+    public List<UserInfoResponseDTO> getAllUserRankings() {
+        List<User> users = userRepository.findAllUserRankings();
+        return users.stream()
+                .map(UserInfoResponseDTO::toDto)
+                .collect(Collectors.toList());
     }
 }
