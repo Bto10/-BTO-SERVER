@@ -29,4 +29,8 @@ public class UserBet {
     @Column(length = 10)
     private String teamC;
 
+    public void update(Long investment, String teamC) {
+        this.investment = investment;
+        this.teamC = teamC;
+    }
 }
