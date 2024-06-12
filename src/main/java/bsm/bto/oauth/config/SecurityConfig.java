@@ -10,7 +10,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@EnableWebSecurity //Spring Security를 활성화
+@EnableWebSecurity
+@Configuration//Spring Security를 활성화
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { //
