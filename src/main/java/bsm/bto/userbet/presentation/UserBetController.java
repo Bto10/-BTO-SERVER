@@ -1,5 +1,6 @@
 package bsm.bto.userbet.presentation;
 
+import bsm.bto.bet.presentation.dto.BetInfoResponseDto;
 import bsm.bto.userbet.presentation.dto.PlaceUserBetRequestDto;
 import bsm.bto.userbet.presentation.dto.UpdateUserBetRequestDto;
 import bsm.bto.userbet.presentation.dto.UserBetInfoResponseDto;
@@ -11,29 +12,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/userbets")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserBetController {
 
     private final UserBetService userBetService;
 
     @PostMapping
-    public ResponseEntity<UserBetInfoResponseDto> placeBet(
+    public ResponseEntity<UserBetInfoResponseDto> placeUserBet(
             @RequestBody PlaceUserBetRequestDto placeUserBetRequestDto
     ){
         UserBetInfoResponseDto placeBetResponseDto = userBetService.placeUserBet(placeUserBetRequestDto);
         return ResponseEntity.ok(placeBetResponseDto);
     }
 
-    @GetMapping("placed/{user_id}")
-    public ResponseEntity<List<UserBetInfoResponseDto>> getBetsPlaced(
+    @GetMapping("/userbets/placed/{user_id}")
+    public ResponseEntity<List<UserBetInfoResponseDto>> getUserBetsPlaced(
             @PathVariable("user_id") Long userId
     ) {
         List<UserBetInfoResponseDto> bets = userBetService.getUserBetsPlacedByUser(userId);
         return ResponseEntity.ok(bets);
     }
 
-    @GetMapping("/{user_bet_id}")
+    @GetMapping("/bets/placed/{user_id}")
+    public ResponseEntity<List<BetInfoResponseDto>> getBetsPlaced(
+            @PathVariable("user_id") Long userId
+    ) {
+        List<BetInfoResponseDto> bets = userBetService.getBetsPlacedByUser(userId);
+        return ResponseEntity.ok(bets);
+    }
+
+    @GetMapping("/userbets/{user_bet_id}")
     public ResponseEntity<UserBetInfoResponseDto> getUserBetInfo(
             @PathVariable("user_bet_id") Long userBetId
     ) {
@@ -49,7 +58,7 @@ public class UserBetController {
         return ResponseEntity.ok(userBetInfoResponseDto);
     }
 
-    @DeleteMapping("/{user_bet_id}")
+    @DeleteMapping("/userbets/{user_bet_id}")
     public ResponseEntity<Void> deleteUserBet(
             @PathVariable("user_bet_id") Long userBetId
     ) {
