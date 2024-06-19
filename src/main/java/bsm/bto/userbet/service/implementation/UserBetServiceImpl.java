@@ -2,6 +2,7 @@ package bsm.bto.userbet.service.implementation;
 
 import bsm.bto.bet.domain.Bet;
 import bsm.bto.bet.domain.repository.BetRepository;
+import bsm.bto.bet.presentation.dto.BetInfoResponseDto;
 import bsm.bto.user.domain.User;
 import bsm.bto.user.domain.repository.UserRepository;
 import bsm.bto.userbet.domain.UserBet;
@@ -56,6 +57,17 @@ public class UserBetServiceImpl implements UserBetService {
         return userBetRepository.findAllByUserId(userId).stream()
                 .map(UserBetInfoResponseDto::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BetInfoResponseDto> getBetsPlacedByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userBetRepository.findByUser(user).stream()
+                .map(UserBet::getBet)
+                .map(BetInfoResponseDto::toDto)
+                .toList();
     }
 
     @Override
